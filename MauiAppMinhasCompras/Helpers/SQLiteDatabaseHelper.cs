@@ -43,5 +43,5 @@ namespace MauiAppMinhasCompras.Helpers
 
             return _conn.QueryAsync<Produto>(sql);
         }
-    }
-}
+    } // Fecha classe SQLiteDatabaseHelper
+} // Fecha namespace MauiAppMinhasCompras.Helpers
