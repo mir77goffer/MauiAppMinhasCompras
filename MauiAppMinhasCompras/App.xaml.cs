@@ -27,8 +27,9 @@ namespace MauiAppMinhasCompras
             Thread.CurrentThread.CurrentCulture = new CultureInfo("pt-BR");
             MainPage = new NavigationPage(new Views.ListaProduto());
         }
+    
 
-        protected override Window CreateWindow(IActivationState? activationState)
+           protected override Window CreateWindow(IActivationState? activationState)
         {
             var window = base.CreateWindow(activationState);
             window.Width = 520;   // Largura da janela

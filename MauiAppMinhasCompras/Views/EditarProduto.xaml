@@ -8,32 +8,14 @@
         <ToolbarItem Text="Salvar" Clicked="ToolbarItem_Clicked" />
     </ContentPage.ToolbarItems>
 
-    <ScrollView>
-        <VerticalStackLayout x:Name="layoutPrincipal"
-                             Spacing="15"
-                             Padding="20"
-                             VerticalOptions="FillAndExpand"
-                             HorizontalOptions="FillAndExpand">
+    <VerticalStackLayout Spacing="10" Padding="10">
+        <Label Text="Descrição do Produto:" />
+        <Entry x:Name="txt_descricao" Text="{Binding Descricao}" />
 
-            <Label Text="Editar Produto" 
-                   FontSize="Title"
-                   HorizontalOptions="Center"
-                   TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+        <Label Text="Quantidade:" />
+        <Entry x:Name="txt_quantidade" Text="{Binding Quantidade}" Keyboard="Numeric" />
 
-            <Grid ColumnDefinitions="*,*"
-                  RowDefinitions="Auto,Auto,Auto"
-                  ColumnSpacing="10"
-                  RowSpacing="15">
-
-                <Label Grid.Row="0" Grid.Column="0" Text="Descrição:" />
-                <Entry Grid.Row="0" Grid.Column="1" x:Name="txt_descricao" Text="{Binding Descricao}" />
-
-                <Label Grid.Row="1" Grid.Column="0" Text="Quantidade:" />
-                <Entry Grid.Row="1" Grid.Column="1" x:Name="txt_quantidade" Text="{Binding Quantidade}" Keyboard="Numeric" />
-
-                <Label Grid.Row="2" Grid.Column="0" Text="Preço Unitário:" />
-                <Entry Grid.Row="2" Grid.Column="1" x:Name="txt_preco" Text="{Binding Preco}" Keyboard="Numeric" />
-            </Grid>
-        </VerticalStackLayout>
-    </ScrollView>
+        <Label Text="Preço Unitário:" />
+        <Entry x:Name="txt_preco" Text="{Binding Preco}" Keyboard="Numeric" />
+    </VerticalStackLayout>
 </ContentPage>

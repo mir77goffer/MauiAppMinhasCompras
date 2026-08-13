@@ -1,5 +1,3 @@
-using Microsoft.Maui.Devices; // Necessário para acessar informações do dispositivo, como largura da tela
-
 using MauiAppMinhasCompras.Models;
 using System.Collections.ObjectModel;
 
@@ -13,36 +11,7 @@ namespace MauiAppMinhasCompras.Views
         {
             InitializeComponent();
             lst_produtos.ItemsSource = lista;
-
-            AjustarLayout(); // Chama o método para ajustar o layout com base na largura da tela
         }
-
-        // Método para ajustar o layout com base na largura da tela
-        private void AjustarLayout()
-        {
-            var displayInfo = DeviceDisplay.MainDisplayInfo;
-            double largura = displayInfo.Width / displayInfo.Density;
-
-            if (largura < 400)
-            {
-                layoutPrincipal.Spacing = 8;
-                layoutPrincipal.Padding = new Thickness(10);
-            }
-            else if (largura < 600)
-            {
-                layoutPrincipal.Spacing = 12;
-                layoutPrincipal.Padding = new Thickness(15);
-            }
-            else
-            {
-                layoutPrincipal.Spacing = 20;
-                layoutPrincipal.Padding = new Thickness(30);
-            }
-        }
-
-        // Demais métodos (OnAppearing, busca, soma, remover, etc.) permanecem iguais
-
-
 
         protected async override void OnAppearing()
         {
@@ -54,7 +23,7 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Ops", ex.Message, "OK");
+                await DisplayAlert("Ops", ex.Message, "OK");
             }
         }
 
@@ -75,7 +44,7 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Ops", ex.Message, "OK");
+                await DisplayAlert("Ops", ex.Message, "OK");
             }
             finally
             {
@@ -87,7 +56,7 @@ namespace MauiAppMinhasCompras.Views
         {
             double soma = lista.Sum(i => i.Total);
             string msg = $"O total é {soma:C}";
-            DisplayAlertAsync("Total dos Produtos", msg, "OK");
+            DisplayAlert("Total dos Produtos", msg, "OK");
         }
 
         private async void MenuItem_Clicked(object sender, EventArgs e)
@@ -97,7 +66,7 @@ namespace MauiAppMinhasCompras.Views
                 MenuItem selecinado = sender as MenuItem;
                 Produto p = selecinado.BindingContext as Produto;
 
-                bool confirm = await DisplayAlertAsync("Tem Certeza?", $"Remover {p.Descricao}?", "Sim", "Não");
+                bool confirm = await DisplayAlert("Tem Certeza?", $"Remover {p.Descricao}?", "Sim", "Não");
                 if (confirm)
                 {
                     await App.Db.Delete(p.Id);
@@ -106,7 +75,7 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Ops", ex.Message, "OK");
+                await DisplayAlert("Ops", ex.Message, "OK");
             }
         }
 
@@ -122,7 +91,7 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                DisplayAlertAsync("Ops", ex.Message, "OK");
+                DisplayAlert("Ops", ex.Message, "OK");
             }
         }
 
@@ -136,7 +105,7 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Ops", ex.Message, "OK");
+                await DisplayAlert("Ops", ex.Message, "OK");
             }
             finally
             {
