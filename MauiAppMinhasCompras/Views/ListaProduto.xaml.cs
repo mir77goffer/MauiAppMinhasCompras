@@ -1,3 +1,5 @@
+using Microsoft.Maui.Devices; // Necessário para acessar informações do dispositivo, como largura da tela
+
 using MauiAppMinhasCompras.Models;
 using System.Collections.ObjectModel;
 
@@ -11,7 +13,36 @@ namespace MauiAppMinhasCompras.Views
         {
             InitializeComponent();
             lst_produtos.ItemsSource = lista;
+
+            AjustarLayout(); // Chama o método para ajustar o layout com base na largura da tela
         }
+
+        // Método para ajustar o layout com base na largura da tela
+        private void AjustarLayout()
+        {
+            var displayInfo = DeviceDisplay.MainDisplayInfo;
+            double largura = displayInfo.Width / displayInfo.Density;
+
+            if (largura < 400)
+            {
+                layoutPrincipal.Spacing = 8;
+                layoutPrincipal.Padding = new Thickness(10);
+            }
+            else if (largura < 600)
+            {
+                layoutPrincipal.Spacing = 12;
+                layoutPrincipal.Padding = new Thickness(15);
+            }
+            else
+            {
+                layoutPrincipal.Spacing = 20;
+                layoutPrincipal.Padding = new Thickness(30);
+            }
+        }
+
+        // Demais métodos (OnAppearing, busca, soma, remover, etc.) permanecem iguais
+
+
 
         protected async override void OnAppearing()
         {
