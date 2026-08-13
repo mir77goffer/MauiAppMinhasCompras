@@ -21,13 +21,13 @@ public partial class NovoProduto : ContentPage
             };
 
             await App.Db.Insert(p);
-            await DisplayAlert("Sucesso!", "Registro Inserido", "OK");
+            await DisplayAlertAsync("Sucesso!", "Registro Inserido", "OK");
             await Navigation.PopAsync();
 
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Ops", ex.Message, "OK");
+            await DisplayAlertAsync("Ops", ex.Message, "OK");
         } // Fecha try-catch
     } // Fecha ToolbarItem_Clicked
 } // Fecha classe NovoProduto

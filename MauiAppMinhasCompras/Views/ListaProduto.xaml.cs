@@ -24,7 +24,7 @@ public partial class ListaProduto : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Ops", ex.Message, "OK");
+            await DisplayAlertAsync("Ops", ex.Message, "OK");
         }
     }
 
@@ -37,7 +37,7 @@ public partial class ListaProduto : ContentPage
         }
         catch (Exception ex)
         {
-            DisplayAlert("Ops", ex.Message, "OK");
+            DisplayAlertAsync("Ops", ex.Message, "OK");
         }
     }
 
@@ -57,7 +57,7 @@ public partial class ListaProduto : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Ops", ex.Message, "OK");
+            await DisplayAlertAsync("Ops", ex.Message, "OK");
         }
         finally
         {
@@ -71,7 +71,7 @@ public partial class ListaProduto : ContentPage
 
         string msg = $"O total � {soma:C}";
 
-        DisplayAlert("Total dos Produtos", msg, "OK");
+        DisplayAlertAsync("Total dos Produtos", msg, "OK");
     }
 
     private async void MenuItem_Clicked(object sender, EventArgs e)
@@ -81,8 +81,8 @@ public partial class ListaProduto : ContentPage
             MenuItem selecinado = sender as MenuItem;
             Produto p = selecinado.BindingContext as Produto;
 
-            bool confirm = await DisplayAlert(
-                "Tem Certeza?", $"Remover {p.Descricao}?", "Sim", "N�o");
+            bool confirm = await DisplayAlertAsync(
+                "Tem Certeza?", $"Remover {p.Descricao}?", "Sim", "Não");
 
             if (confirm)
             {
@@ -92,7 +92,7 @@ public partial class ListaProduto : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Ops", ex.Message, "OK");
+            await DisplayAlertAsync("Ops", ex.Message, "OK");
         }
     }
 
@@ -110,7 +110,7 @@ public partial class ListaProduto : ContentPage
         }
         catch (Exception ex)
         {
-            DisplayAlert("Ops", ex.Message, "OK");
+            DisplayAlertAsync("Ops", ex.Message, "OK");
         }
     }
 
@@ -126,7 +126,7 @@ public partial class ListaProduto : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Ops", ex.Message, "OK");
+            await DisplayAlertAsync("Ops", ex.Message, "OK");
 
         }
         finally
