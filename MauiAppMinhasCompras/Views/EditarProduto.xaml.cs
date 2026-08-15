@@ -23,12 +23,12 @@ namespace MauiAppMinhasCompras.Views
                 };
 
                 await App.Db.Update(p);
-                await DisplayAlert("Sucesso!", "Registro Atualizado", "OK");
+                await DisplayAlertAsync("Sucesso!", "Registro Atualizado", "OK");
                 await Navigation.PopAsync();
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Ops", ex.Message, "OK");
+                await DisplayAlertAsync("Ops", ex.Message, "OK");
             }
         }
     }

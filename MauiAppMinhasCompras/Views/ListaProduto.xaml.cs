@@ -23,7 +23,7 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Ops", ex.Message, "OK");
+                await DisplayAlertAsync("Ops", ex.Message, "OK");
             }
         }
 
@@ -44,7 +44,7 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Ops", ex.Message, "OK");
+                await DisplayAlertAsync("Ops", ex.Message, "OK");
             }
             finally
             {
@@ -56,7 +56,7 @@ namespace MauiAppMinhasCompras.Views
         {
             double soma = lista.Sum(i => i.Total);
             string msg = $"O total é {soma:C}";
-            DisplayAlert("Total dos Produtos", msg, "OK");
+            DisplayAlertAsync("Total dos Produtos", msg, "OK");
         }
 
         private async void MenuItem_Clicked(object sender, EventArgs e)
@@ -66,7 +66,7 @@ namespace MauiAppMinhasCompras.Views
                 MenuItem selecinado = sender as MenuItem;
                 Produto p = selecinado.BindingContext as Produto;
 
-                bool confirm = await DisplayAlert("Tem Certeza?", $"Remover {p.Descricao}?", "Sim", "Não");
+                bool confirm = await DisplayAlertAsync("Tem Certeza?", $"Remover {p.Descricao}?", "Sim", "Não");
                 if (confirm)
                 {
                     await App.Db.Delete(p.Id);
@@ -75,7 +75,7 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Ops", ex.Message, "OK");
+                await DisplayAlertAsync("Ops", ex.Message, "OK");
             }
         }
 
@@ -91,7 +91,7 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                DisplayAlert("Ops", ex.Message, "OK");
+                DisplayAlertAsync("Ops", ex.Message, "OK");
             }
         }
 
@@ -105,7 +105,7 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Ops", ex.Message, "OK");
+                await DisplayAlertAsync("Ops", ex.Message, "OK");
             }
             finally
             {
