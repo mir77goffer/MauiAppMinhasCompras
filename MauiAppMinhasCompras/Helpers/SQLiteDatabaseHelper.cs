@@ -34,10 +34,13 @@ namespace MauiAppMinhasCompras.Helpers
             return _conn.Table<Produto>().ToListAsync();
         }
 
+        // Mantido para casos de busca direta no banco (ex.: bases muito grandes).
+        // Consulta parametrizada — evita SQL Injection (a versão anterior concatenava
+        // o texto digitado direto na string SQL).
         public Task<List<Produto>> Search(string q)
         {
-            string sql = "SELECT * FROM Produto WHERE Descricao LIKE '%" + q + "%'";
-            return _conn.QueryAsync<Produto>(sql);
+            string sql = "SELECT * FROM Produto WHERE Descricao LIKE ?";
+            return _conn.QueryAsync<Produto>(sql, $"%{q}%");
         }
     }
 }
