@@ -2,20 +2,94 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiAppMinhasCompras.Views.EditarProduto"
-             Title="{Binding Descricao}">
+             Title="{Binding Descricao}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Salvar" Clicked="ToolbarItem_Clicked" />
-    </ContentPage.ToolbarItems>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="CartaoForm" TargetType="Border">
+                <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+                <Setter Property="Stroke" Value="Transparent" />
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark={StaticResource Gray900}}" />
+                <Setter Property="Padding" Value="18" />
+                <Setter Property="Shadow">
+                    <Shadow Brush="Black" Offset="0,3" Radius="10" Opacity="0.12" />
+                </Setter>
+            </Style>
+            <Style x:Key="CampoEntrada" TargetType="Border">
+                <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}" />
+                <Setter Property="Padding" Value="12,2" />
+            </Style>
+            <Style x:Key="RotuloCampo" TargetType="Label">
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{StaticResource Gray500}" />
+                <Setter Property="Margin" Value="2,0,0,4" />
+            </Style>
+            <Style x:Key="BotaoPrimario" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="HeightRequest" Value="52" />
+                <Setter Property="HorizontalOptions" Value="Fill" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-    <VerticalStackLayout Spacing="10" Padding="10">
-        <Label Text="Descrição do Produto:" />
-        <Entry x:Name="txt_descricao" Text="{Binding Descricao}" />
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
 
-        <Label Text="Quantidade:" />
-        <Entry x:Name="txt_quantidade" Text="{Binding Quantidade}" Keyboard="Numeric" />
+            <Label Text="Editar produto"
+                   FontSize="20"
+                   FontAttributes="Bold" />
+            <Label Text="Atualize os dados do produto abaixo."
+                   FontSize="13"
+                   TextColor="{StaticResource Gray500}" />
 
-        <Label Text="Preço Unitário:" />
-        <Entry x:Name="txt_preco" Text="{Binding Preco}" Keyboard="Numeric" />
-    </VerticalStackLayout>
+            <Border Style="{StaticResource CartaoForm}">
+                <VerticalStackLayout Spacing="16">
+
+                    <VerticalStackLayout Spacing="0">
+                        <Label Text="DESCRIÇÃO" Style="{StaticResource RotuloCampo}" />
+                        <Border Style="{StaticResource CampoEntrada}">
+                            <Entry x:Name="txt_descricao"
+                                   Text="{Binding Descricao}"
+                                   BackgroundColor="Transparent" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" Spacing="0">
+                            <Label Text="QUANTIDADE" Style="{StaticResource RotuloCampo}" />
+                            <Border Style="{StaticResource CampoEntrada}">
+                                <Entry x:Name="txt_quantidade"
+                                       Text="{Binding Quantidade}"
+                                       Keyboard="Numeric"
+                                       BackgroundColor="Transparent" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="0">
+                            <Label Text="PREÇO UNITÁRIO" Style="{StaticResource RotuloCampo}" />
+                            <Border Style="{StaticResource CampoEntrada}">
+                                <Entry x:Name="txt_preco"
+                                       Text="{Binding Preco}"
+                                       Keyboard="Numeric"
+                                       BackgroundColor="Transparent" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="Salvar Alterações"
+                    Style="{StaticResource BotaoPrimario}"
+                    Clicked="OnSalvarClicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

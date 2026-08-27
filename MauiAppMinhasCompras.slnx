@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="MauiAppMinhasCompras/MauiAppMinhasCompras.csproj" />
+  <Project Path="MauiAppMinhasCompras/MauiAppMinhasCompras.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
 </Solution>
