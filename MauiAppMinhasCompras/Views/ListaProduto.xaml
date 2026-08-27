@@ -2,73 +2,158 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiAppMinhasCompras.Views.ListaProduto"
-             Title="Minhas Compras">
-
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Somar" Clicked="ToolbarItem_Clicked_1" />
-        <ToolbarItem Text="Adicionar" Clicked="ToolbarItem_Clicked" />
-    </ContentPage.ToolbarItems>
+             Title="Minhas Compras"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray950}}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style TargetType="Label">
-                <Setter Property="VerticalTextAlignment" Value="Center" />
+
+            <!-- Card de cada produto na lista -->
+            <Style x:Key="CardProduto" TargetType="Border">
+                <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+                <Setter Property="Stroke" Value="Transparent" />
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark={StaticResource Gray900}}" />
+                <Setter Property="Padding" Value="14" />
+                <Setter Property="Margin" Value="14,6" />
+                <Setter Property="Shadow">
+                    <Shadow Brush="Black" Offset="0,3" Radius="10" Opacity="0.12" />
+                </Setter>
             </Style>
 
-            <Style x:Key="cabecalho_listview" TargetType="Grid">
-                <Setter Property="BackgroundColor"
-                        Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Primary}}" />
+            <!-- "Chips" do resumo (quantidade de itens / total) -->
+            <Style x:Key="ChipResumo" TargetType="Border">
+                <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+                <Setter Property="Stroke" Value="Transparent" />
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray900}}" />
+                <Setter Property="Padding" Value="14,8" />
             </Style>
+
+            <!-- Botão flutuante (FAB) para adicionar produto -->
+            <Style x:Key="FabAdicionar" TargetType="Button">
+                <Setter Property="WidthRequest" Value="60" />
+                <Setter Property="HeightRequest" Value="60" />
+                <Setter Property="CornerRadius" Value="30" />
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="FontSize" Value="30" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Shadow">
+                    <Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.35" />
+                </Setter>
+            </Style>
+
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <StackLayout>
+    <Grid RowDefinitions="Auto,Auto,*" Padding="0">
+
+        <!-- Cabeçalho: busca -->
         <SearchBar x:Name="txt_search"
-                   Placeholder="Busca de Produtos"
-                   TextChanged="txt_search_TextChanged">
-            <SearchBar.Margin>
-                <OnPlatform x:TypeArguments="Thickness">
-                    <On Platform="Android" Value="-15, 0, 0, 0" />
-                    <On Platform="UWP" Value="5, 0, 5, 0" />
-                </OnPlatform>
-            </SearchBar.Margin>
-        </SearchBar>
+                   Grid.Row="0"
+                   Placeholder="Buscar produto..."
+                   Margin="10,10,10,0"
+                   TextChanged="txt_search_TextChanged" />
 
-        <Frame Padding="0" Margin="10" VerticalOptions="FillAndExpand">
-            <ListView x:Name="lst_produtos"
-                      IsPullToRefreshEnabled="True"
-                      Refreshing="lst_produtos_Refreshing"
-                      ItemSelected="lst_produtos_ItemSelected">
+        <!-- Resumo: quantidade de itens e valor total, atualizado em tempo real -->
+        <HorizontalStackLayout Grid.Row="1" Spacing="10" Margin="14,10,14,4">
+            <Border Style="{StaticResource ChipResumo}">
+                <Label x:Name="lbl_contagem" Text="0 produtos" FontAttributes="Bold" FontSize="13" />
+            </Border>
+            <Border Style="{StaticResource ChipResumo}">
+                <Label x:Name="lbl_total" Text="Total: R$ 0,00" FontAttributes="Bold" FontSize="13"
+                       TextColor="{StaticResource Primary}" />
+            </Border>
+        </HorizontalStackLayout>
 
-                <ListView.Header>
-                    <Grid ColumnDefinitions="30, 100, 80, 50, 90"
-                          Style="{StaticResource cabecalho_listview}">
-                        <Label Grid.Column="0" Text="ID" Padding="5" FontAttributes="Bold" />
-                        <Label Grid.Column="1" Text="Descrição" FontAttributes="Bold" />
-                        <Label Grid.Column="2" Text="Preço" FontAttributes="Bold" />
-                        <Label Grid.Column="3" Text="Qnt" FontAttributes="Bold" />
-                        <Label Grid.Column="4" Text="Total" FontAttributes="Bold" />
-                    </Grid>
-                </ListView.Header>
+        <!-- Conteúdo: lista de produtos em cards, com pull-to-refresh -->
+        <Grid Grid.Row="2">
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <ViewCell.ContextActions>
-                                <MenuItem Text="Remover" Clicked="MenuItem_Clicked" />
-                            </ViewCell.ContextActions>
+            <RefreshView x:Name="refreshView" Refreshing="RefreshView_Refreshing">
+                <CollectionView x:Name="lst_produtos"
+                                 SelectionMode="Single"
+                                 SelectionChanged="lst_produtos_SelectionChanged">
 
-                            <Grid ColumnDefinitions="30, 100, 80, 50, 90">
-                                <Label Grid.Column="0" Text="{Binding Id}" Padding="5" />
-                                <Label Grid.Column="1" Text="{Binding Descricao}" />
-                                <Label Grid.Column="2" Text="{Binding Preco, StringFormat='{}{0:c}'}" />
-                                <Label Grid.Column="3" Text="{Binding Quantidade}" />
-                                <Label Grid.Column="4" Text="{Binding Total, StringFormat='{}{0:c}'}" />
-                            </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Frame>
-    </StackLayout>
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout HorizontalOptions="Center"
+                                             VerticalOptions="Center"
+                                             Spacing="8"
+                                             Padding="40">
+                            <Label Text="🛒" FontSize="48" HorizontalOptions="Center" />
+                            <Label Text="Nenhum produto encontrado"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   HorizontalOptions="Center" />
+                            <Label Text="Tente outro termo de busca ou adicione um novo produto."
+                                   TextColor="{StaticResource Gray500}"
+                                   FontSize="13"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <SwipeView>
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItem Text="Remover"
+                                                   BackgroundColor="#E53935"
+                                                   BindingContext="{Binding}"
+                                                   Invoked="SwipeItem_Remover_Invoked" />
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+
+                                <Border Style="{StaticResource CardProduto}">
+                                    <Grid ColumnDefinitions="*,Auto">
+
+                                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                            <Label Text="{Binding Descricao}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="16"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label FontSize="12"
+                                                   TextColor="{StaticResource Gray500}">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="Qtd: " />
+                                                        <Span Text="{Binding Quantidade}" />
+                                                        <Span Text="  •  Unit.: " />
+                                                        <Span Text="{Binding Preco, StringFormat='{0:C}'}" />
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </VerticalStackLayout>
+
+                                        <Label Grid.Column="1"
+                                               Text="{Binding Total, StringFormat='{0:C}'}"
+                                               FontAttributes="Bold"
+                                               FontSize="16"
+                                               TextColor="{StaticResource Primary}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+
+            <!-- Indicador de carregamento inicial -->
+            <ActivityIndicator x:Name="loadingIndicator"
+                                IsRunning="False"
+                                IsVisible="False"
+                                Color="{StaticResource Primary}"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center" />
+
+            <!-- Botão flutuante: adicionar produto -->
+            <Button Text="+"
+                    Style="{StaticResource FabAdicionar}"
+                    HorizontalOptions="End"
+                    VerticalOptions="End"
+                    Margin="0,0,20,20"
+                    Clicked="OnAdicionarClicked" />
+        </Grid>
+    </Grid>
 </ContentPage>

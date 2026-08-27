@@ -9,7 +9,7 @@ namespace MauiAppMinhasCompras.Views
         // Lista "mestre": todos os produtos carregados do banco (fonte de verdade)
         List<Produto> todosProdutos = new List<Produto>();
 
-        // Coleção exibida na tela — vinculada ao ListView.
+        // Coleção exibida na tela — vinculada ao CollectionView.
         // Qualquer Add/Remove/Clear aqui atualiza a interface automaticamente.
         ObservableCollection<Produto> lista = new ObservableCollection<Produto>();
 
@@ -22,7 +22,14 @@ namespace MauiAppMinhasCompras.Views
         protected async override void OnAppearing()
         {
             base.OnAppearing();
+
+            loadingIndicator.IsVisible = true;
+            loadingIndicator.IsRunning = true;
+
             await CarregarProdutosAsync();
+
+            loadingIndicator.IsRunning = false;
+            loadingIndicator.IsVisible = false;
         }
 
         // Carrega (ou recarrega) os produtos do banco e reaplica o filtro atual
@@ -54,6 +61,18 @@ namespace MauiAppMinhasCompras.Views
             lista.Clear();
             foreach (var produto in resultado)
                 lista.Add(produto);
+
+            AtualizarResumo();
+        }
+
+        // Atualiza os "chips" com a quantidade de itens exibidos e o valor total
+        void AtualizarResumo()
+        {
+            int quantidade = lista.Count;
+            double total = lista.Sum(i => i.Total);
+
+            lbl_contagem.Text = quantidade == 1 ? "1 produto" : $"{quantidade} produtos";
+            lbl_total.Text = $"Total: {total:C}";
         }
 
         // Disparado a cada caractere digitado/apagado no SearchBar
@@ -62,27 +81,19 @@ namespace MauiAppMinhasCompras.Views
             AplicarFiltro(e.NewTextValue);
         }
 
-        // Botão "Adicionar" na toolbar
-        private void ToolbarItem_Clicked(object sender, EventArgs e)
+        // Botão flutuante "+"
+        private void OnAdicionarClicked(object sender, EventArgs e)
         {
             Navigation.PushAsync(new Views.NovoProduto());
         }
 
-        // Botão "Somar" na toolbar
-        private void ToolbarItem_Clicked_1(object sender, EventArgs e)
-        {
-            double soma = lista.Sum(i => i.Total);
-            string msg = $"O total é {soma:C}";
-            DisplayAlertAsync("Total dos Produtos", msg, "OK");
-        }
-
-        // Ação de contexto "Remover" em cada item da lista
-        private async void MenuItem_Clicked(object sender, EventArgs e)
+        // Swipe para a esquerda no card -> "Remover"
+        private async void SwipeItem_Remover_Invoked(object sender, EventArgs e)
         {
             try
             {
-                MenuItem selecionado = sender as MenuItem;
-                Produto p = selecionado?.BindingContext as Produto;
+                SwipeItem item = sender as SwipeItem;
+                Produto p = item?.BindingContext as Produto;
                 if (p == null)
                     return;
 
@@ -92,6 +103,7 @@ namespace MauiAppMinhasCompras.Views
                     await App.Db.Delete(p.Id);
                     todosProdutos.Remove(p);
                     lista.Remove(p);
+                    AtualizarResumo();
                 }
             }
             catch (Exception ex)
@@ -100,12 +112,12 @@ namespace MauiAppMinhasCompras.Views
             }
         }
 
-        // Ao tocar em um item da lista, abre a tela de edição
-        private void lst_produtos_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        // Toque em um card -> abre a tela de edição
+        private void lst_produtos_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                Produto p = e.SelectedItem as Produto;
+                Produto p = e.CurrentSelection.FirstOrDefault() as Produto;
                 if (p == null)
                     return;
 
@@ -114,7 +126,7 @@ namespace MauiAppMinhasCompras.Views
                     BindingContext = p,
                 });
 
-                // Desmarca o item selecionado (evita destaque preso ao voltar)
+                // Desmarca o item selecionado (evita o card ficar "destacado" ao voltar)
                 lst_produtos.SelectedItem = null;
             }
             catch (Exception ex)
@@ -124,7 +136,7 @@ namespace MauiAppMinhasCompras.Views
         }
 
         // Pull-to-refresh: recarrega tudo do banco e reaplica o filtro atual
-        private async void lst_produtos_Refreshing(object sender, EventArgs e)
+        private async void RefreshView_Refreshing(object sender, EventArgs e)
         {
             try
             {
@@ -136,7 +148,7 @@ namespace MauiAppMinhasCompras.Views
             }
             finally
             {
-                lst_produtos.IsRefreshing = false;
+                refreshView.IsRefreshing = false;
             }
         }
     }
