@@ -16,7 +16,7 @@ namespace MauiAppMinhasCompras
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             // ADICIONE este trecho dentro de MauiProgram.CreateMauiApp(), ANTES de "return builder.Build();"

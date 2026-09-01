@@ -12,12 +12,7 @@ namespace MauiAppMinhasCompras.Models
         public string Descricao
         {
             get => _descricao;
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new Exception("Por favor, preencha a descrição");
-                _descricao = value;
-            }
+            set => _descricao = value?.Trim(); // não lança exceção
         }
 
         public double Quantidade { get; set; }

@@ -39,7 +39,7 @@ namespace MauiAppMinhasCompras.Views
                 Produto p = new ()
                 {
                     Id = produto_anexado.Id,
-                    Descricao = txt_descricao.Text,
+                    Descricao = txt_descricao.Text, // agora pode ser editado sem crash
                     Quantidade = quantidade,
                     Preco = preco
                 };
