@@ -56,7 +56,7 @@ namespace MauiAppMinhasCompras.Views
                 Produto p = new()
                 {
                     Id = produto_anexado.Id,
-                    Descricao = txt_descricao.Text.Trim(),
+                    Descricao = txt_descricao.Text.Trim(), // agora pode ser editado sem crash
                     Categoria = string.IsNullOrWhiteSpace(txt_categoria.Text)
                         ? "Sem categoria"
                         : txt_categoria.Text.Trim(),

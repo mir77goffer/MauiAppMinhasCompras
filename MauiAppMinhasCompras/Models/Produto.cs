@@ -14,10 +14,10 @@ namespace MauiAppMinhasCompras.Models
             get => _descricao;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new Exception("Por favor, preencha a descrição");
-
-                _descricao = value;
+                if (value != null)
+                    _descricao = value.Trim(); // não lança exceção
+                else
+                    _descricao = null;
             }
         }
 
