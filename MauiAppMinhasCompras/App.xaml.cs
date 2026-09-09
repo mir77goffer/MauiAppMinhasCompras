@@ -6,6 +6,7 @@ namespace MauiAppMinhasCompras
     public partial class App : Application
     {
         static SQLiteDatabaseHelper _db;
+
         public static SQLiteDatabaseHelper Db
         {
             get
@@ -15,8 +16,10 @@ namespace MauiAppMinhasCompras
                     string path = Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                         "banco_sqlite_compras.db3");
+
                     _db = new SQLiteDatabaseHelper(path);
                 }
+
                 return _db;
             }
         }
@@ -24,18 +27,20 @@ namespace MauiAppMinhasCompras
         public App()
         {
             InitializeComponent();
+
             Thread.CurrentThread.CurrentCulture = new CultureInfo("pt-BR");
+
             MainPage = new NavigationPage(new Views.ListaProduto());
         }
-    
 
-           protected override Window CreateWindow(IActivationState? activationState)
+        protected override Window CreateWindow(IActivationState? activationState)
         {
             var window = base.CreateWindow(activationState);
-            window.Width = 520;   // Largura da janela
+
+            window.Width = 520;  // Largura da janela
             window.Height = 900; // Altura da janela
+
             return window;
         }
-
     }
 }

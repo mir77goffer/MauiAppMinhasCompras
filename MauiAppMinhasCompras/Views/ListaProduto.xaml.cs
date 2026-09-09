@@ -9,14 +9,27 @@ namespace MauiAppMinhasCompras.Views
         // Lista "mestre": todos os produtos carregados do banco (fonte de verdade)
         List<Produto> todosProdutos = new List<Produto>();
 
-        // Coleção exibida na tela — vinculada ao CollectionView.
+        // Coleção exibida na tela --- vinculada ao CollectionView.
         // Qualquer Add/Remove/Clear aqui atualiza a interface automaticamente.
         ObservableCollection<Produto> lista = new ObservableCollection<Produto>();
 
         public ListaProduto()
         {
             InitializeComponent();
+
             lst_produtos.ItemsSource = lista;
+
+            picker_categoria.ItemsSource = new List<string>
+            {
+                "Todas",
+                "Alimentos",
+                "Higiene",
+                "Limpeza",
+                "Bebidas",
+                "Outros"
+            };
+
+            picker_categoria.SelectedIndex = 0;
         }
 
         protected async override void OnAppearing()
@@ -38,11 +51,15 @@ namespace MauiAppMinhasCompras.Views
             try
             {
                 todosProdutos = await App.Db.GetAll();
+
                 AplicarFiltro(txt_search.Text);
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Ops", ex.Message, "OK");
+                await DisplayAlertAsync(
+                    "Ops",
+                    ex.Message,
+                    "OK");
             }
         }
 
@@ -52,14 +69,37 @@ namespace MauiAppMinhasCompras.Views
         {
             termo = (termo ?? string.Empty).Trim();
 
-            IEnumerable<Produto> resultado = string.IsNullOrEmpty(termo)
-                ? todosProdutos
-                : todosProdutos.Where(p =>
-                    !string.IsNullOrEmpty(p.Descricao) &&
-                    p.Descricao.Contains(termo, StringComparison.OrdinalIgnoreCase));
+            string categoriaSelecionada =
+                picker_categoria?.SelectedItem?.ToString() ?? "Todas";
+
+            IEnumerable<Produto> resultado = todosProdutos;
+
+            if (!string.IsNullOrWhiteSpace(termo))
+            {
+                resultado = resultado.Where(p =>
+                    (!string.IsNullOrWhiteSpace(p.Descricao) &&
+                     p.Descricao.Contains(
+                         termo,
+                         StringComparison.OrdinalIgnoreCase))
+                    ||
+                    (!string.IsNullOrWhiteSpace(p.Categoria) &&
+                     p.Categoria.Contains(
+                         termo,
+                         StringComparison.OrdinalIgnoreCase)));
+            }
+
+            if (categoriaSelecionada != "Todas")
+            {
+                resultado = resultado.Where(p =>
+                    string.Equals(
+                        p.Categoria ?? "Sem categoria",
+                        categoriaSelecionada,
+                        StringComparison.OrdinalIgnoreCase));
+            }
 
             lista.Clear();
-            foreach (var produto in resultado)
+
+            foreach (Produto produto in resultado)
                 lista.Add(produto);
 
             AtualizarResumo();
@@ -69,9 +109,13 @@ namespace MauiAppMinhasCompras.Views
         void AtualizarResumo()
         {
             int quantidade = lista.Count;
+
             double total = lista.Sum(i => i.Total);
 
-            lbl_contagem.Text = quantidade == 1 ? "1 produto" : $"{quantidade} produtos";
+            lbl_contagem.Text = quantidade == 1
+                ? "1 produto"
+                : $"{quantidade} produtos";
+
             lbl_total.Text = $"Total: {total:C}";
         }
 
@@ -79,6 +123,13 @@ namespace MauiAppMinhasCompras.Views
         private void txt_search_TextChanged(object sender, TextChangedEventArgs e)
         {
             AplicarFiltro(e.NewTextValue);
+        }
+
+        // Botão para abrir o relatório
+        private async void OnRelatorioClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(
+                new RelatorioCategorias());
         }
 
         // Botão flutuante "+"
@@ -93,22 +144,34 @@ namespace MauiAppMinhasCompras.Views
             try
             {
                 SwipeItem item = sender as SwipeItem;
+
                 Produto p = item?.BindingContext as Produto;
+
                 if (p == null)
                     return;
 
-                bool confirm = await DisplayAlertAsync("Tem certeza?", $"Remover {p.Descricao}?", "Sim", "Não");
+                bool confirm = await DisplayAlertAsync(
+                    "Tem certeza?",
+                    $"Remover {p.Descricao}?",
+                    "Sim",
+                    "Não");
+
                 if (confirm)
                 {
                     await App.Db.Delete(p.Id);
+
                     todosProdutos.Remove(p);
                     lista.Remove(p);
+
                     AtualizarResumo();
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Ops", ex.Message, "OK");
+                await DisplayAlertAsync(
+                    "Ops",
+                    ex.Message,
+                    "OK");
             }
         }
 
@@ -118,6 +181,7 @@ namespace MauiAppMinhasCompras.Views
             try
             {
                 Produto p = e.CurrentSelection.FirstOrDefault() as Produto;
+
                 if (p == null)
                     return;
 
@@ -131,7 +195,10 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                DisplayAlertAsync("Ops", ex.Message, "OK");
+                DisplayAlertAsync(
+                    "Ops",
+                    ex.Message,
+                    "OK");
             }
         }
 
@@ -144,12 +211,22 @@ namespace MauiAppMinhasCompras.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Ops", ex.Message, "OK");
+                await DisplayAlertAsync(
+                    "Ops",
+                    ex.Message,
+                    "OK");
             }
             finally
             {
                 refreshView.IsRefreshing = false;
             }
+        }
+
+        private void picker_categoria_SelectedIndexChanged(
+            object sender,
+            EventArgs e)
+        {
+            AplicarFiltro(txt_search.Text);
         }
     }
 }

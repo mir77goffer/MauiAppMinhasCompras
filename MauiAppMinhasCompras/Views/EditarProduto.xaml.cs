@@ -15,42 +15,70 @@ namespace MauiAppMinhasCompras.Views
             try
             {
                 Produto? produto_anexado = BindingContext as Produto;
+
                 if (produto_anexado == null)
                     return;
 
                 if (string.IsNullOrWhiteSpace(txt_descricao.Text))
                 {
-                    await DisplayAlertAsync("Ops", "Informe a descrição do produto.", "OK");
+                    await DisplayAlertAsync(
+                        "Ops",
+                        "Informe a descrição do produto.",
+                        "OK");
+
                     return;
                 }
 
-                if (!NumberHelper.TryParseDecimal(txt_quantidade.Text, out double quantidade))
+                if (!NumberHelper.TryParseDecimal(
+                        txt_quantidade.Text,
+                        out double quantidade))
                 {
-                    await DisplayAlertAsync("Ops", "Informe uma quantidade válida (ex: 2 ou 2,5).", "OK");
+                    await DisplayAlertAsync(
+                        "Ops",
+                        "Informe uma quantidade válida (ex: 2 ou 2,5).",
+                        "OK");
+
                     return;
                 }
 
-                if (!NumberHelper.TryParseDecimal(txt_preco.Text, out double preco))
+                if (!NumberHelper.TryParseDecimal(
+                        txt_preco.Text,
+                        out double preco))
                 {
-                    await DisplayAlertAsync("Ops", "Informe um preço válido (ex: 15,90 ou 15.90).", "OK");
+                    await DisplayAlertAsync(
+                        "Ops",
+                        "Informe um preço válido (ex: 15,90 ou 15.90).",
+                        "OK");
+
                     return;
                 }
 
-                Produto p = new ()
+                Produto p = new()
                 {
                     Id = produto_anexado.Id,
-                    Descricao = txt_descricao.Text, // agora pode ser editado sem crash
+                    Descricao = txt_descricao.Text.Trim(),
+                    Categoria = string.IsNullOrWhiteSpace(txt_categoria.Text)
+                        ? "Sem categoria"
+                        : txt_categoria.Text.Trim(),
                     Quantidade = quantidade,
                     Preco = preco
                 };
 
                 await App.Db.Update(p);
-                await DisplayAlertAsync("Sucesso!", "Registro atualizado.", "OK");
+
+                await DisplayAlertAsync(
+                    "Sucesso!",
+                    "Registro atualizado.",
+                    "OK");
+
                 await Navigation.PopAsync();
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Ops", ex.Message, "OK");
+                await DisplayAlertAsync(
+                    "Ops",
+                    ex.Message,
+                    "OK");
             }
         }
     }

@@ -16,36 +16,63 @@ namespace MauiAppMinhasCompras.Views
             {
                 if (string.IsNullOrWhiteSpace(txt_descricao.Text))
                 {
-                    await DisplayAlertAsync("Ops", "Informe a descrição do produto.", "OK");
+                    await DisplayAlertAsync(
+                        "Ops",
+                        "Informe a descrição do produto.",
+                        "OK");
+
                     return;
                 }
 
-                if (!NumberHelper.TryParseDecimal(txt_quantidade.Text, out double quantidade))
+                if (!NumberHelper.TryParseDecimal(
+                        txt_quantidade.Text,
+                        out double quantidade))
                 {
-                    await DisplayAlertAsync("Ops", "Informe uma quantidade válida (ex: 2 ou 2,5).", "OK");
+                    await DisplayAlertAsync(
+                        "Ops",
+                        "Informe uma quantidade válida (ex: 2 ou 2,5).",
+                        "OK");
+
                     return;
                 }
 
-                if (!NumberHelper.TryParseDecimal(txt_preco.Text, out double preco))
+                if (!NumberHelper.TryParseDecimal(
+                        txt_preco.Text,
+                        out double preco))
                 {
-                    await DisplayAlertAsync("Ops", "Informe um preço válido (ex: 15,90 ou 15.90).", "OK");
+                    await DisplayAlertAsync(
+                        "Ops",
+                        "Informe um preço válido (ex: 15,90 ou 15.90).",
+                        "OK");
+
                     return;
                 }
 
                 Produto p = new Produto
                 {
-                    Descricao = txt_descricao.Text,
+                    Descricao = txt_descricao.Text.Trim(),
+                    Categoria = string.IsNullOrWhiteSpace(txt_categoria.Text)
+                        ? "Sem categoria"
+                        : txt_categoria.Text.Trim(),
                     Quantidade = quantidade,
                     Preco = preco
                 };
 
                 await App.Db.Insert(p);
-                await DisplayAlertAsync("Sucesso!", "Produto adicionado.", "OK");
+
+                await DisplayAlertAsync(
+                    "Sucesso!",
+                    "Produto adicionado.",
+                    "OK");
+
                 await Navigation.PopAsync();
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Ops", ex.Message, "OK");
+                await DisplayAlertAsync(
+                    "Ops",
+                    ex.Message,
+                    "OK");
             }
         }
     }

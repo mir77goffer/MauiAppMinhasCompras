@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppMinhasCompras.Views.RelatorioCategorias"
+             Title="Relatório por Categoria"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100},
+                                               Dark={StaticResource Gray950}}">
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          Padding="16">
+
+        <VerticalStackLayout Grid.Row="0"
+                             Spacing="4">
+
+            <Label Text="Relatório de compras"
+                   FontSize="22"
+                   FontAttributes="Bold" />
+
+            <Label Text="Total gasto por categoria"
+                   FontSize="14"
+                   TextColor="{StaticResource Gray500}" />
+
+        </VerticalStackLayout>
+
+        <Border Grid.Row="1"
+                Margin="0,16,0,12"
+                Padding="16"
+                StrokeShape="RoundRectangle 16"
+                Stroke="Transparent"
+                BackgroundColor="{AppThemeBinding Light=White,
+                                                  Dark={StaticResource Gray900}}">
+
+            <VerticalStackLayout Spacing="4">
+
+                <Label Text="TOTAL GERAL"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Gray500}" />
+
+                <Label x:Name="lbl_total_geral"
+                       Text="R$ 0,00"
+                       FontSize="26"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Primary}" />
+
+                <Label x:Name="lbl_resumo"
+                       Text="0 categorias"
+                       FontSize="13"
+                       TextColor="{StaticResource Gray500}" />
+
+            </VerticalStackLayout>
+        </Border>
+
+        <CollectionView x:Name="lst_relatorio"
+                        Grid.Row="2">
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Spacing="8">
+
+                    <Label Text="Nenhuma compra cadastrada"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center" />
+
+                    <Label Text="Cadastre produtos para gerar o relatório."
+                           FontSize="13"
+                           TextColor="{StaticResource Gray500}"
+                           HorizontalOptions="Center" />
+
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="0,5"
+                            Padding="14"
+                            StrokeShape="RoundRectangle 14"
+                            Stroke="Transparent"
+                            BackgroundColor="{AppThemeBinding Light=White,
+                                                              Dark={StaticResource Gray900}}">
+
+                        <Grid ColumnDefinitions="*,Auto"
+                              RowDefinitions="Auto,Auto">
+
+                            <Label Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="{Binding Categoria}"
+                                   FontSize="17"
+                                   FontAttributes="Bold" />
+
+                            <Label Grid.Row="1"
+                                   Grid.Column="0"
+                                   Text="{Binding QuantidadeProdutos, StringFormat='{0} produto(s)'}"
+                                   FontSize="12"
+                                   TextColor="{StaticResource Gray500}" />
+
+                            <Label Grid.RowSpan="2"
+                                   Grid.Column="1"
+                                   Text="{Binding Total, StringFormat='{0:C}'}"
+                                   FontSize="17"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource Primary}"
+                                   VerticalOptions="Center" />
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+    </Grid>
+</ContentPage>
