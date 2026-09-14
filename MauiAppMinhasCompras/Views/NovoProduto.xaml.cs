@@ -1,6 +1,8 @@
 using MauiAppMinhasCompras.Helpers;
 using MauiAppMinhasCompras.Models;
 
+using System.Globalization; // Para usar a cultura pt-BR no aplicativo
+
 namespace MauiAppMinhasCompras.Views
 {
     public partial class NovoProduto : ContentPage
@@ -54,8 +56,8 @@ namespace MauiAppMinhasCompras.Views
                     Categoria = string.IsNullOrWhiteSpace(txt_categoria.Text)
                         ? "Sem categoria"
                         : txt_categoria.Text.Trim(),
-                    Quantidade = quantidade,
-                    Preco = preco
+                    Quantidade = Convert.ToDouble(txt_quantidade.Text),
+                    Preco = double.Parse(txt_preco.Text.Replace(",", "."), CultureInfo.InvariantCulture)
                 };
 
                 await App.Db.Insert(p);

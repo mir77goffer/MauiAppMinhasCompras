@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿using System.Globalization; // Para usar a cultura pt-BR no aplicativo
 
 namespace MauiAppMinhasCompras.Helpers
 {
